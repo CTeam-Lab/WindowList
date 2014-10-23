@@ -6,7 +6,7 @@ import yaml
 
 class Create():
     def __init__(self):
-
+        #yaml should be deprecated soon
         CURRENT_DIR = os.path.dirname(__file__)
         config_path = os.path.join(CURRENT_DIR, 'blacklist.yml')
         self.config = yaml.load(file(config_path))

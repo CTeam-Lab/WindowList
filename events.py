@@ -11,6 +11,10 @@ class Events():
         if event.state == 2:
             self.close()
 
+    def menu_popup(self, widget, event):
+        if(event.button == 3):
+            widget.menu.popup(None, None, None, None, 0, Gtk.get_current_event_time())
+
     def on_clicked(self, widget):
         self.switch_window(widget.win_id)
 

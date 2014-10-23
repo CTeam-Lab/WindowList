@@ -4,14 +4,25 @@ import os
 import transparency
 import desktops
 import events
-
+import menu
+import settings
+import var_dump
 from gi.repository import Gtk, Gdk, cairo, Wnck as wnck
 
 class Create(Gtk.Window):
     def __init__(self):
         super(Create, self).__init__()
-
         self.events = events.Events()
+        self.set_name('MyWindow')
+        self.set_resizable(False)
+        self.menu = menu.Menu()
+        self.menu.set_window(self)
+        self.menu.create_menu()
+
+
+        self.settings = settings.Handler()
+        self.settings.reloaded()
+
         self.set_decorated(False)
         self.set_position(1)
         self.set_title(globals.APP_NAME)
@@ -21,15 +32,11 @@ class Create(Gtk.Window):
         #self.fullscreen()
 
         table = Gtk.Table(3,6,False)
-
         self.new_desktop_list = desktops.Create().get_desktops()
 
         # Create a new notebook, place the position of the tabs
         self.notebook = Gtk.Notebook()
         self.notebook.set_show_border(False)
-
-        #self.notebook.set_show_tabs(False)
-        transparency.Transparent.makeTransparent(self.notebook)
         self.notebook.set_tab_pos(2)
         self.add_desktops()
 
@@ -39,11 +46,11 @@ class Create(Gtk.Window):
         self.add(table)
 
         self.connect("destroy", Gtk.main_quit)
+        self.connect("button_press_event", self.events.menu_popup)
         self.connect("visibility_notify_event", self.events.window_visibility_event)
         self.connect("key-release-event", self.events.on_key_release)
-
+        #self.show_menu()
         self.show_all()
-
 
     def add_desktops(self):
 
@@ -92,7 +99,7 @@ class Create(Gtk.Window):
             frame.show()
 
             label = Gtk.Label(bufferf)
-
+            
             self.notebook.append_page(frame, label)
 
     def add_button(self, win_title, win_id, wnck_window):
